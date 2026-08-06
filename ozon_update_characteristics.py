@@ -25,14 +25,14 @@ LOCAL_LOG_PATH = f"local_logs/{SCRIPT_NAME}_{current_time}.log"
 logger = setup_logger(LOCAL_LOG_PATH, level_console="INFO", level_file="DEBUG",
                       net_log_path=NET_LOG_PATH)
 
-BITRIX_CHAT_ID = None # Добавьте свой
+BITRIX_CHAT_ID = 'chat97219'
 
 bitrix_bot = BitrixBot(api_url='https://case-place.bitrix24.ru/rest/409/gr0aj9pvi8g8c2qn/',
                        bot_id=413,
                        client_id='96tveccre473vojfi3gupdqnf0kepb3w',
                        folder='own')
 
-PATH_TOKENS = "tokens/ozon.xlsx" # Путь к токенам
+PATH_TOKENS = "M:/Pricing/Озон/tokens/ozon.xlsx"
 
 DESCRIPTION_CATEGORY_ID = 17028650
 TYPE_ID = 97011
@@ -265,18 +265,20 @@ class ExcelFileProcessor:
                 errors.append(f"Отсутствует обязательная колонка: '{col}'")
         
         # 2. Проверка колонки offer_id на пустые значения
-        articul_col = self.df['артикул']
-        empty_mask = articul_col.isna() | (articul_col.astype(str).str.strip() == '')
-        if empty_mask.any():
-            bad_indices = articul_col.index[empty_mask].tolist()[:10]
-            errors.append(f"Колонка 'Артикул' содержит пустые значения (индексы: {bad_indices})")
+        if 'артикул' in self.df.columns:
+            articul_col = self.df['артикул']
+            empty_mask = articul_col.isna() | (articul_col.astype(str).str.strip() == '')
+            if empty_mask.any():
+                bad_indices = articul_col.index[empty_mask].tolist()[:10]
+                errors.append(f"Колонка 'Артикул' содержит пустые значения (индексы: {bad_indices})")
         
         # 3. Проверка колонки ip на пустые значения
-        ip_col = self.df['ип']
-        ip_empty_mask = ip_col.isna() | (ip_col.astype(str).str.strip() == '')
-        if ip_empty_mask.any():
-            bad_indices = ip_col.index[ip_empty_mask].tolist()[:10]
-            errors.append(f"Колонка 'ИП' содержит пустые значения (индексы: {bad_indices})")
+        if 'ип' in self.df.columns:
+            ip_col = self.df['ип']
+            ip_empty_mask = ip_col.isna() | (ip_col.astype(str).str.strip() == '')
+            if ip_empty_mask.any():
+                bad_indices = ip_col.index[ip_empty_mask].tolist()[:10]
+                errors.append(f"Колонка 'ИП' содержит пустые значения (индексы: {bad_indices})")
         
         # 4. Проверка каждой колонки на тип данных
         for column in self.df.columns:
@@ -567,7 +569,7 @@ class AttributesUpdater:
                                         'weight_unit': 'g',
                                         'attributes': [{'id': 85,
                                                         'complex_id': 0,
-                                                        'values': [{'dictionary_value_id': 970617589}]},
+                                                        'values': [{'dictionary_value_id': 970617589, 'value': 'Case Place'}]},
             
         """
         
@@ -809,14 +811,14 @@ def apply_root_changes(all_products_from_api: Dict, df: pd.DataFrame):
     Применяет изменение из Excel к root-полям для всех товаров.
 
     Args:
-        all_products_from_api: словарь {ip: {offer_id: {product_data}}} {'Название': {'HWHN10XL-10-7Q00060': {'offer_id': 'HWHN10XL-10-7Q00060',
+        all_products_from_api: словарь {ip: {offer_id: {product_data}}} {'Брайт Кейс': {'HWHN10XL-10-7Q00060': {'offer_id': 'HWHN10XL-10-7Q00060',
                                                                 'name': 'Чехол на Хонор 10Х Лайт силиконовый с принтом "Динозаврики"',
                                                                 'attributes': [{'id': 85,
                                                                 'complex_id': 0,
-                                                                'values': [{'dictionary_value_id': 970617589, 'value': 'Значение'}]},
+                                                                'values': [{'dictionary_value_id': 970617589, 'value': 'Case Place'}]},
         df: колонки - ip, offer_id, name..
         
-    Returns: Обновленный all_products_from_api - будут обновлены root поля: {'Название': 
+    Returns: Обновленный all_products_from_api - будут обновлены root поля: {'Брайт Кейс': 
                                                                             {'HWHR10-10-7W056': 
                                                                             {'offer_id': 'HWHR10-10-7W056', 'name': 'Чехол на Хонор 10 с цветочками...
     """
@@ -880,7 +882,12 @@ def apply_root_changes(all_products_from_api: Dict, df: pd.DataFrame):
                 
     return updater_product               
 
-                     
+
+def check_tasks():
+    """feedback для таймера"""
+    logger.debug(f"Таймер завершен")
+                       
+                      
 def get_all_attributes_for_update(df, map_mapping: Dict) -> Dict:
     """
     Маппинг атрибутов. Получаем только те атрибуты, которые нужно обновить в массиве attributes
@@ -999,13 +1006,13 @@ def apply_attribute_changes(all_products_from_api: Dict,
     Обновляет массив attributes в словаре с характеристиками
 
     Args:
-        all_products_from_api: {ip: {offer_id: {product_data}}} - {'Название': {'HWHR10-10-7W056': {'offer_id': 'HWHR10-10-7W056', 'name': 'Apple', 'description_category_id': 17028650, 'currency_code': 'RUB',
+        all_products_from_api: {ip: {offer_id: {product_data}}} - {'Брайт Кейс': {'HWHR10-10-7W056': {'offer_id': 'HWHR10-10-7W056', 'name': 'Apple', 'description_category_id': 17028650, 'currency_code': 'RUB',
         all_attributes_for_update: словарь только тех атрибутов, которые нужно обновить - {'HWHR10-10-7W056': {23171: '#хештег', 4389: 'Россия', 4383: '60', 4191: 'Описание товра'}}
         characteristic_for_attributes_from_api: словарь со справочниками атрибутов - может быть пустым - {'HWHR10-10-7W056': {4389: {'Россия': 90295, 'Китай': 90296, 'Не указана': 90297, 'Италия': 90298, 'США': 90299,
         attributes_complex_ids: {23171: 0, 4389: 0, 4383: 0, 4191: 0}
         attributes_or_complex_attributes: Флаг для фильтра, если False, то атрибуты будем искать в массиве attributes, если True, то в complex_attributes
     Returns:
-            Dict[int: str]: {ip: {offer_id: {product_data}}} - {'Название': {'HWHR10-10-7W056': {'offer_id': 'HWHR10-10-7W056', 'name': 'Apple', 'description_category_id': 17028650, 'currency_code': 'RUB', 
+            Dict[int: str]: {ip: {offer_id: {product_data}}} - {'Брайт Кейс': {'HWHR10-10-7W056': {'offer_id': 'HWHR10-10-7W056', 'name': 'Apple', 'description_category_id': 17028650, 'currency_code': 'RUB', 
     """
     if attributes_or_complex_attributes:
         KEY = 'complex_attributes'
@@ -1130,7 +1137,6 @@ def update_typing_attributes(all_attributes_for_update: Dict, typing_attributes:
     for id, type in typing_attributes.items():
         for _, attributes in all_attributes_for_update.items():
             try:
-                # Отдельная обработка для rich контента
                 if id == 11254:
                     attributes[id] = json.dumps(json.loads(attributes[id]))
                 else:
@@ -1243,7 +1249,7 @@ def preparation_complex_attributes(all_products_from_api):
                                                                     "values": [
                                                                     {
                                                                     "dictionary_value_id": 0,
-                                                                    "value": "ссылка на фото"
+                                                                    "value": "https://v.ozone.ru/vod/video-10/01GFATWQVCDE7G5B721421P1231Q7/asset_1.mp4"
                                                                     }
                                                                     ]
                                                                 }
@@ -1263,9 +1269,9 @@ def delete_error_characetristic(all_products_from_api, status_products, all_attr
     Удаляет товар по offer_id, если он имеет статус ERROR
 
     Args:
-        all_products_from_api: {'Seller': {'12559-9C506764': {'offer_id': '12559-9C506764', 'name': 'Чехол на Айфон 12 с картой', 'description_category_id': 17028650, 'currency_code': 'RUB', ...
+        all_products_from_api: {'Сыворотко': {'12559-9C506764': {'offer_id': '12559-9C506764', 'name': 'Чехол на Айфон 12 с картой', 'description_category_id': 17028650, 'currency_code': 'RUB', ...
         all_attributes_for_update: {'12559-9C506764': {4389: 'fdgdfhg', 10096: 'bxdcb'}}
-        status_products: [{'offer_id': '12559-9C506764', 'ip': 'Seller', 'status': 'ERROR атрибут="bxdcb" отсутсвует в справочнике Озон'}]
+        status_products: [{'offer_id': '12559-9C506764', 'ip': 'Сыворотко', 'status': 'ERROR атрибут="bxdcb" отсутсвует в справочнике Озон'}]
     Returns:
         result: Обновленный all_products_from_api
     """
@@ -1547,7 +1553,7 @@ for ip, product_by_offer in all_products_from_api.items():
 
 logger.debug(f"Сформирован all_tasks_from_api={all_tasks_from_api}")
 
-# Ждем проверку от Озон. Модерация от Озон длится примерно 50 секунд.
+# Ждем проверку от Озон
 logger.info("Ждём 50 секунд, пока Озон проверит товары!")
 time.sleep(50)
 logger.info("Проверяем статусы товаров!")
