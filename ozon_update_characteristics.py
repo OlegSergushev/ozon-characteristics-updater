@@ -25,11 +25,11 @@ LOCAL_LOG_PATH = f"local_logs/{SCRIPT_NAME}_{current_time}.log"
 logger = setup_logger(LOCAL_LOG_PATH, level_console="INFO", level_file="DEBUG",
                       net_log_path=NET_LOG_PATH)
 
-BITRIX_CHAT_ID = 'chat97219'
+BITRIX_CHAT_ID = ''
 
-bitrix_bot = BitrixBot(api_url='https://case-place.bitrix24.ru/rest/409/gr0aj9pvi8g8c2qn/',
+bitrix_bot = BitrixBot(api_url='https://case-place.bitrix24.ru/rest/615/uxbt5t13tcg3rqc5/',
                        bot_id=413,
-                       client_id='96tveccre473vojfi3gupdqnf0kepb3w',
+                       client_id='',
                        folder='own')
 
 PATH_TOKENS = "M:/Pricing/Озон/tokens/ozon.xlsx"
@@ -59,6 +59,9 @@ ROOT_MAPPING = {
         'единица измерения веса': 'weight_unit',
         'ширина упаковки': 'width',
 }
+
+ROOT_CHARACTERISTICS = ('barcode', 'color_image', 'currency_code', 'depth', 'description_category_id', 'dimension_unit', 'height', 'images', 'images360', 'name', 'old_price', 'price',
+                        'primary_image', 'type_id', 'vat', 'weight', 'weight_unit', 'width')
     
 ATTRIBUTES_MAPPING = {
         'вид чехла': 5938,
@@ -96,20 +99,27 @@ COMPLEX_ATTRIBUTES_MAPPING = {
         'озон.видеообложка: ссылка': 21845,
 }
 
-TYPING_CHARACTERISTIC = {'ип': (object,), 'артикул': (object,), 'штрихкод товара': ('int64', 'float64'), 'маркетинговый цвет': (object,), 'валюта': (object,), 
-                        'глубина упаковки': ('int64', 'float64'), 'идентификатор категории': ('int64', 'float64'), 'единица измерения габаритов': (object,), 
-                        'высота упаковки': ('int64', 'float64'), 'фото': (object, str), 'фото 360': (object, str), 'название товара': (object, str), 
-                        'цена до скидок': ('int64', 'float64'), 'цена товара с учётом скидок': ('int64', 'float64'), 'ссылка на главное изображение товара': (object, str), 
-                        'идентификатор типа товара': ('int64', 'float64'), 'ставка ндс для товара': ('int64', 'float64'), 'вес товара в упаковке': ('int64', 'float64'), 
-                        'единица измерения веса': (object, str), 'ширина упаковки': ('int64', 'float64'), 'вид чехла': (object, str),'#хештеги': (object, str), 
-                        'название модели (для объединения в одну карточку)': (object, str), 'вид выпуска товара': (object, str), 'бренд': (object, str), 
-                        'страна-изготовитель': (object, str), 'тн вэд коды еаэс': (object, str), 'признак 18+': (object, str), 'цвет товара': (object, str), 'название': (object, str), 
-                        'макс. диагональ экрана, дюймы': ('int64', 'float64'), 'количество заводских упаковок': ('int64', 'float64'), 'мин. диагональ, дюймы': ('int64', 'float64'), 
-                        'застежка': (object, str), 'код продавца': (object, str), 'вес товара, г': ('int64', 'float64'), 'комплектация': object, 'особенности': object, 'гарантия': object, 
-                        'размеры, мм': ('int64', 'float64'), 'материал': (object, str), 'аннотация': (object, str), 'название цвета': (object, str), 'нужен код маркировки': (bool,), 
-                        'подходит для': (object, str), 'озон.видео: ссылка': (object, str), 'модель устройства': (object, str), 'rich-контент json': (object, str),
-                        'озон.видео: название': (object, str), 'озон.видеообложка: ссылка': (object, str)}
-
+TYPING_CHARACTERISTIC = {
+    'ип': ('str',), 'артикул': ('str',), 'штрихкод товара': ('int64', 'float64'), 
+    'маркетинговый цвет': ('str',), 'валюта': ('str',), 'глубина упаковки': ('int64', 'float64'), 
+    'идентификатор категории': ('int64', 'float64'), 'единица измерения габаритов': ('str',), 
+    'высота упаковки': ('int64', 'float64'), 'фото': ('str',), 'фото 360': ('str',), 
+    'название товара': ('str',), 'цена до скидок': ('int64', 'float64'), 
+    'цена товара с учётом скидок': ('int64', 'float64'), 'ссылка на главное изображение товара': ('str',), 
+    'идентификатор типа товара': ('int64', 'float64'), 'ставка ндс для товара': ('int64', 'float64'), 
+    'вес товара в упаковке': ('int64', 'float64'), 'единица измерения веса': ('str',), 
+    'ширина упаковки': ('int64', 'float64'), 'вид чехла': ('str',), '#хештеги': ('str',), 
+    'название модели (для объединения в одну карточку)': ('str',), 'вид выпуска товара': ('str',), 
+    'бренд': ('str',), 'страна-изготовитель': ('str',), 'тн вэд коды еаэс': ('str',), 
+    'признак 18+': ('str',), 'цвет товара': ('str',), 'название': ('str',), 
+    'макс. диагональ экрана, дюймы': ('int64', 'float64'), 'количество заводских упаковок': ('int64', 'float64'), 
+    'мин. диагональ, дюймы': ('int64', 'float64'), 'застежка': ('str',), 'код продавца': ('str',), 
+    'вес товара, г': ('int64', 'float64'), 'комплектация': ('str',), 'особенности': ('str',), 
+    'гарантия': ('str',), 'размеры, мм': ('int64', 'float64'), 'материал': ('str',), 
+    'аннотация': ('str',), 'название цвета': ('str',), 'нужен код маркировки': ('str',), 
+    'подходит для': ('str',), 'озон.видео: ссылка': ('str',), 'модель устройства': ('str',), 
+    'rich-контент json': ('str',), 'озон.видео: название': ('str',), 'озон.видеообложка: ссылка': ('str',)
+}
 
 ТYPING_ATTRIBUTES = {
         11254: str,
@@ -141,7 +151,7 @@ TYPING_CHARACTERISTIC = {'ип': (object,), 'артикул': (object,), 'штр
         22900: str,
         21837: str,
         21845: str,
-        23536: bool,
+        23536: str,
 }
 
 
@@ -155,20 +165,25 @@ class ExcelFileProcessor:
     - Остальные колонки: названия характеристик (например, "Цвет", "Материал", "Бренд")
     """
     
-    def __init__(self, file_path: str):
+    def __init__(self, file_path: str, mode: str):
         """
         Args:
             file_path: путь к Excel-файлу
         """
         self.file_path = Path(file_path)
         self.df = None
+        self.mode = mode
         self._load()
         self._drop_empty_columns()
         self._check_columns()
-        self._convert_types_bool()
         self._validate()
+        if self.mode == 'update':
+            self._convert_types_bool()
         self._map_columns()
-    
+        if self.mode == 'delete':
+            self._map_lower_for_delete()
+            self._check_equality_delete()
+        
     def _load(self):
         """Загружает Excel-файл"""
         if not self.file_path.exists():
@@ -189,8 +204,8 @@ class ExcelFileProcessor:
                        'тн вэд коды еаэс', 'признак 18+', 'цвет товара', 'название', 'макс. диагональ экрана, дюймы', 'количество заводских упаковок',
                        'мин. диагональ, дюймы', 'застежка', 'код продавца', 'вес товара, г', 'комплектация', 'особенности', 'гарантия', 'размеры, мм',
                        'материал', 'аннотация', 'название цвета', 'нужен код маркировки', 'подходит для', 'озон.видео: ссылка', 'модель устройства',
-                       'озон.видео: название', 'озон.видеообложка: ссылка', 'ссылки на дополнительные фото', 'rich-контент json',
-                       'доп. фото 360', 'доп. озон.видео: ссылка', 'доп. озон.видео: название']
+                       'озон.видео: название', 'озон.видеообложка: ссылка', 'ссылки на дополнительные фото', 'доп. фото 360', 'rich-контент json',
+                       'доп. озон.видео: ссылка', 'доп. озон.видео: название']
         
         error_columns = []
         
@@ -239,17 +254,17 @@ class ExcelFileProcessor:
                 continue
             
             self.df[col] = self.df[col].map({
-                'да': 'true',
-                'нет': 'false',
-                'Да': 'true',
-                'Нет': 'false',
-                'true': 'true',
-                'false': 'false',
-                '+': 'true',
-                '-': 'false',
+                'да': True,
+                'нет': False,
+                'Да': True,
+                'Нет': False,
+                'true': True,
+                'false': False,
+                '+': True,
+                '-': False,
             }).fillna(False)
             
-            self.df[col] = self.df[col].astype(str)
+            self.df[col] = self.df[col].astype(bool)
     
     def _validate(self) -> None:
         """
@@ -265,27 +280,42 @@ class ExcelFileProcessor:
                 errors.append(f"Отсутствует обязательная колонка: '{col}'")
         
         # 2. Проверка колонки offer_id на пустые значения
-        if 'артикул' in self.df.columns:
-            articul_col = self.df['артикул']
-            empty_mask = articul_col.isna() | (articul_col.astype(str).str.strip() == '')
-            if empty_mask.any():
-                bad_indices = articul_col.index[empty_mask].tolist()[:10]
-                errors.append(f"Колонка 'Артикул' содержит пустые значения (индексы: {bad_indices})")
+        articul_col = self.df['артикул']
+        empty_mask = articul_col.isna() | (articul_col.astype(str).str.strip() == '')
+        if empty_mask.any():
+            bad_indices = articul_col.index[empty_mask].tolist()[:10]
+            errors.append(f"Колонка 'Артикул' содержит пустые значения (индексы: {bad_indices})")
         
         # 3. Проверка колонки ip на пустые значения
-        if 'ип' in self.df.columns:
-            ip_col = self.df['ип']
-            ip_empty_mask = ip_col.isna() | (ip_col.astype(str).str.strip() == '')
-            if ip_empty_mask.any():
-                bad_indices = ip_col.index[ip_empty_mask].tolist()[:10]
-                errors.append(f"Колонка 'ИП' содержит пустые значения (индексы: {bad_indices})")
+        ip_col = self.df['ип']
+        ip_empty_mask = ip_col.isna() | (ip_col.astype(str).str.strip() == '')
+        if ip_empty_mask.any():
+            bad_indices = ip_col.index[ip_empty_mask].tolist()[:10]
+            errors.append(f"Колонка 'ИП' содержит пустые значения (индексы: {bad_indices})")
         
         # 4. Проверка каждой колонки на тип данных
-        for column in self.df.columns:
-            if column in TYPING_CHARACTERISTIC:
-                if self.df[column].dtype not in TYPING_CHARACTERISTIC[column]:
-                    logger.warning(f"Колонка '{column}' содержит неверные значения! Либо вместо строк цифры, либо цифры вместо строк!")
-                    input("Нажмите Enter, чтобы продолжить...")
+        if self.mode == 'update':
+            for column in self.df.columns:
+                if column in TYPING_CHARACTERISTIC:
+                    # Получаем строковое имя типа из Pandas
+                    raw_dtype = str(self.df[column].dtype)
+                    
+                    # Приводим любые строковые репрезентации Pandas к единому 'str'
+                    if raw_dtype in ('object', 'string', 'str', 'O'):
+                        current_dtype = 'str'
+                    # Приводим любые булевые типы к 'bool'
+                    elif raw_dtype in ('bool', 'boolean'):
+                        current_dtype = 'bool'
+                    else:
+                        current_dtype = raw_dtype
+                    
+                    # Проверяем нормализованный тип по красивому словарю
+                    if current_dtype not in TYPING_CHARACTERISTIC[column]:
+                        errors.append(
+                            f"Колонка '{column}' содержит неверный тип данных! "
+                            f"Текущий тип: '{raw_dtype}', а ожидался один из: {TYPING_CHARACTERISTIC[column]}. "
+                            f"Проверьте, нет ли в колонке пустых ячеек (NaN) или некорректных значений."
+                        )
         
         if errors:
             for error in errors:
@@ -294,6 +324,19 @@ class ExcelFileProcessor:
             raise ValueError("\n".join(errors))
         
         logger.info(f"Валидация Excel файла пройдена {len(self.df)} строк, {len(self.df.columns)} колонок")
+    
+    def _map_lower_for_delete(self):
+        """Переводит все значения в нижний регистр"""
+        cols_not_lower = self.df.columns.difference(['ip', 'offer_id'])
+                
+        self.df[cols_not_lower] = self.df[cols_not_lower].map(lambda x: x.lower() if isinstance(x, str) else x)
+    
+    def _check_equality_delete(self):
+        """Проверяет, что все значения это - "удалить" """
+        is_all_delete = self.df.drop(columns=['ip', 'offer_id'], errors='ignore').fillna('удалить').eq('удалить').all().all()
+        
+        if not is_all_delete:
+            raise ValueError(f'В файле "Удаление х-р Ozon.xlsx" значения должны быть только "удалить"')
     
     def get_offer_ids(self) -> List[str]:
         """
@@ -341,15 +384,21 @@ class ExcelFileProcessor:
         rows = []
         
         for _, row in self.df.iterrows():
-            ip_value = str(row['ip']).strip()
-            offer_id = str(row['offer_id']).strip()
-            if not offer_id or offer_id == 'nan':
+            ip_value = str(row['ip']).strip() if pd.notna(row['offer_id']) else ''
+            offer_id = str(row['offer_id']).strip() if pd.notna(row['ip']) else ''
+            
+            if not offer_id or offer_id.lower() == 'nan':
                 continue
             
             characteristics = {}
-            for col in self.get_characteristics_columns():
+            
+            for col in self.df.columns:
+                if col in ['ip', 'offer_id']:
+                    continue
+                
                 value = row[col]
-                if pd.notna(value) and str(value).strip():
+                
+                if pd.notna(value) and str(value).strip() != '':
                     characteristics[col] = value
             
             rows.append({
@@ -360,6 +409,25 @@ class ExcelFileProcessor:
         
         return rows
     
+    def get_dict_dicts(self) -> Dict:
+        """Возвращает словарь словарей с ключами offer_id
+        
+        Returns: {'270250-9R102243': {'ip': 'Качалов', 'offer_id': '270250-9R102243', 'бренд': 'удалить', '#хештеги': 'удалить', 'name': 'удалить'}...}
+        """
+        df_dict = {}
+        for row_dict in self.df.to_dict('records'):
+            df_dict[row_dict['offer_id']] = row_dict
+        
+        return df_dict
+    
+    def check_update_root_characteristics(self) -> bool:
+        """Узнаем, нужно ли обновялть root колонки"""
+        
+        for col in self.df.columns:
+            if col in ROOT_CHARACTERISTICS:
+                return True
+        return False
+        
     def get_status_list(self):
         """
         Возвращает список статусов. Статус по умолчанию ОК
@@ -382,7 +450,7 @@ class ExcelFileProcessor:
             })
         
         return rows
-
+    
         
 class OzonAuth:
     """Класс для получения токенов Ozon из Excel"""
@@ -732,8 +800,6 @@ class OzonAPIClient:
     BASE_URL = "https://api-seller.ozon.ru"
     
     def __init__(self, client_id: int, api_key: str, max_retries: int = 5):
-        self.client_id = client_id
-        self.api_key = api_key
         self.max_retries = max_retries
         
         self.session = requests.Session()
@@ -806,7 +872,7 @@ def chunks(lst: list, n: int):
         yield lst[i:i + n]
 
 
-def apply_root_changes(all_products_from_api: Dict, df: pd.DataFrame):
+def apply_root_changes(all_products_from_api: Dict, df_dict: Dict) -> Dict:
     """
     Применяет изменение из Excel к root-полям для всех товаров.
 
@@ -824,8 +890,6 @@ def apply_root_changes(all_products_from_api: Dict, df: pd.DataFrame):
     """
     
     updater_product = all_products_from_api.copy()
-    
-    df_dict = {}
     
     TYPING_MAPPING = {
         'offer_id': str,
@@ -847,15 +911,11 @@ def apply_root_changes(all_products_from_api: Dict, df: pd.DataFrame):
         'width': int,
     }
     
-    # Преобразуем датафрейм в словарь
-    for row_dict in df.to_dict('records'):
-        df_dict[row_dict['offer_id']] = row_dict
-    
     # Меняем root атрибуты в целевом словаре словарей        
     for _, product_data in updater_product.items():
         for offer_id, product in product_data.items():
             for name_attr, value_attr in df_dict[offer_id].items():
-                if value_attr and name_attr in product:
+                if value_attr and (name_attr in product):
                     if name_attr == 'images':
                         product[name_attr] = [i.strip() for i in value_attr.split(';')]
                     elif name_attr == 'images360':
@@ -874,15 +934,15 @@ def apply_root_changes(all_products_from_api: Dict, df: pd.DataFrame):
     for offer_id, product_data in df_dict.items():
         try:
             if product_data['доп. фото 360']:
-                item = [i.strip() for i in product_data['доп. фото 360'].split(';')]
+                item = [i.strip() for i in product_data['доп. фото 360'].split(',')]
                 updater_product[product_data['ip']][offer_id]['images360'].extend(item)
         except Exception:
             continue    
    
                 
     return updater_product               
-
-
+                    
+                    
 def check_tasks():
     """feedback для таймера"""
     logger.debug(f"Таймер завершен")
@@ -913,7 +973,7 @@ def get_all_attributes_for_update(df, map_mapping: Dict) -> Dict:
     for row_dict in df.to_dict('records'):
         items = {}
         for key_df, value_df in row_dict.items():
-            if key_df in map_mapping and value_df:
+            if key_df in map_mapping:
                 items[map_mapping[key_df]] = value_df
                 
         if items:
@@ -1190,7 +1250,7 @@ def update_video_attributes(df, all_products_from_api):
 def save_report_to_reports(df_report: pd.DataFrame, current_time, SCRIPT_NAME) -> str:
     """
     Создает папку reports
-    Сохраняет ДатаФрейм в папку reports
+    Сохраняет Excel в папку reports
 
     Args:
         df_report: DataFrame c  колонками ip, offer_id, task_id, status, error
@@ -1216,6 +1276,7 @@ def save_report_to_reports(df_report: pd.DataFrame, current_time, SCRIPT_NAME) -
 
 
 def fix_complex_attributes(product_data):
+    """Переводит словарь в правильный формат для отправки по API"""
     
     if 'complex_attributes' not in product_data:
         return product_data
@@ -1264,12 +1325,41 @@ def preparation_complex_attributes(all_products_from_api):
     return all_products_from_api
 
 
+def get_file_path():
+    """Получаем путь к файлу"""
+    # Получаем путь к директории текущего скрипта
+    if getattr(sys, 'frozen', False):
+        # Если это скомпилированный .exe
+        script_dir = Path(sys.executable).parent
+    elif "__file__" in globals():
+        # Если это обычный .py файл на компьютере
+        script_dir = Path(__file__).resolve().parent
+    else:
+        # Jupyter Notebook
+        script_dir = Path.cwd()
+
+    # Формируем пути
+    update_file = script_dir / 'Обновление х-р Ozon.xlsx'
+    delete_file = script_dir / 'Удаление х-р Ozon.xlsx'
+    
+    if update_file.exists() and delete_file.exists():
+        raise ValueError(f'Обнаружено сразу два файла! Оставьте только один: либо "Обновление...", либо "Удаление...".')
+    
+    # Проверяем, какой файл реально существует
+    if update_file.exists():
+        return update_file, 'update'
+    elif delete_file.exists():
+        return delete_file, 'delete'
+    else:
+        raise ValueError(f'Не удалось найти файл: "Обновление х-р Ozon.xlsx" или "Удаление х-р Ozon.xlsx"')
+
+
 def delete_error_characetristic(all_products_from_api, status_products, all_attributes_for_update=None):
     """
     Удаляет товар по offer_id, если он имеет статус ERROR
 
     Args:
-        all_products_from_api: {'Сыворотко': {'12559-9C506764': {'offer_id': '12559-9C506764', 'name': 'Чехол на Айфон 12 с картой', 'description_category_id': 17028650, 'currency_code': 'RUB', ...
+        all_products_from_api: {'Продавец': {'12559-9C506764': {'offer_id': '12559-9C506764', 'name': 'Чехол на Айфон 12 с картой', 'description_category_id': 17028650, 'currency_code': 'RUB', ...
         all_attributes_for_update: {'12559-9C506764': {4389: 'fdgdfhg', 10096: 'bxdcb'}}
         status_products: [{'offer_id': '12559-9C506764', 'ip': 'Сыворотко', 'status': 'ERROR атрибут="bxdcb" отсутсвует в справочнике Озон'}]
     Returns:
@@ -1307,7 +1397,52 @@ def delete_error_characetristic(all_products_from_api, status_products, all_attr
     logger.warning(f"Справочные атрибуты товаров={delete_offer_ids} заполнены неверно!\nИх не удалось найти в справочнике Озон!\nТовары будут пропущены и не будут обновлены!")
     
     return result_all_product, result_all_attributes
+
+
+def delete_root_characterictics(all_products_from_api: Dict, dict_dicts_from_df: Dict) -> Dict:
+    """Удаляет root характеристки
     
+    Args: 
+        all_products_from_api: Главный словарь с характеристиками
+        dict_dicts_from_df: Словарь с характеристика из Датафрейма , а он из файла Excel
+    
+    Returns:
+        all_products_from_api: Обновленный словарь с удаленными характеристиками
+    """
+    
+    # Удаляем root атрибуты в целевом словаре словарей        
+    for _, product_data in all_products_from_api.items():
+        for offer_id, product in product_data.items():
+            root_to_detele = dict_dicts_from_df.get(offer_id)
+            if not root_to_detele:
+                continue
+            for name_attr, value_attr in root_to_detele.items():
+                if value_attr and name_attr != 'offer_id' and name_attr in product:
+                    if name_attr in ('images', 'images360'):
+                        product[name_attr] = []
+                    else:
+                        del product[name_attr]
+    
+    return all_products_from_api
+
+
+def delete_attributes(all_products_from_api: Dict, all_attributes_for_delete: Dict, key_attributes: str) -> Dict:
+    """Удаляет атрибуты из массива attributes
+    Args:
+        all_products_from_api: {'Продавец': {'271350-9R102184': {'offer_id': '', 'attributes': [{'id': 85, 'complex_id': 0, 'values': [{'dictionary_value_id': 970617589, 'value': 'Case Place'}]}, ...
+        all_attributes_for_delete: {'270250-9R102243': {85: 'удалить', 23171: 'удалить', 10096: 'удалить', 4191: 'удалить', 4389: 'удалить'}, ...
+        key_attributes(str): attributes или complex_attributes - ключ для словаря
+    Returns:
+        all_products_from_api: Обновленный словарь с удаленными атрибутами из attributes или complex_attributes
+    """
+    
+    for _, product_data in all_products_from_api.items():
+        for offer_id, product in product_data.items():
+            delete_arrts = all_attributes_for_delete.get(offer_id)
+            if delete_arrts and key_attributes in product:
+                product[key_attributes] = [attr for attr in product[key_attributes] if attr.get('id') not in delete_arrts]
+    
+    return all_products_from_api
     
 # Создаем словарь токенов
 try:
@@ -1319,9 +1454,10 @@ except Exception as e:
 
 # Валидация файла
 try:
-    source_file = ExcelFileProcessor("Обновление х-р Ozon.xlsx")
+    file_path, mode = get_file_path()
+    source_file = ExcelFileProcessor(file_path, mode)
 except Exception as e:
-    logger.info(f'Произошла ошибка связанная с валидацией файла "Обновление х-р Ozon.xlsx".\nТекст ошибки: {e}\nПроверьте входной файл!')
+    logger.info(f'Произошла ошибка связанная с валидацией файла "Обновление/Удаление х-р Ozon.xlsx".\nТекст ошибки: {e}\nПроверьте входной файл!')
     input('\nНажмите Enter для выхода...')
     sys.exit(1)
 
@@ -1353,7 +1489,6 @@ for ip, group_df in groups:
             batch_data = updater.get_product_specifications(chunk)
         except Exception as e:
             logger.info(f'Произошла ошибка связанная с получением информации о товарах по АПИ.\nТекст ошибки: {e}\nВозможные причины: 1. ошибка на стороне Озон, 2. offer_id не найден в системе Озон!')
-            input('\nНажмите Enter для выхода...')
             for status in status_products:
                 if status['offer_id'] in chunk:
                     status['status'] = f'ERROR ошибка связана с получением информации о товарах по АПИ={e}'
@@ -1362,158 +1497,187 @@ for ip, group_df in groups:
         # Добавляем все характеристики в один словарь словарей
         all_products_from_api[ip].update(batch_data)
 
-# Извлекаем description_category_id и type_id для запроса к API, чтобы получить справочники атрибутов
-description_category_id = None
-type_id = None
-for _, product_data in all_products_from_api.items():
-    for _, characteristic in product_data.items():
-        description_category_id = characteristic.get('description_category_id', DESCRIPTION_CATEGORY_ID)
-        type_id = characteristic.get('type_id', TYPE_ID)
-        if description_category_id and type_id:
-            break
+# Cоздаем словарь словарей из датафрейма
+dict_dicts_from_df = source_file.get_dict_dicts()
 
-# Обновляем корень словаря словарей данными из Датафрейма
-all_products_from_api = apply_root_changes(all_products_from_api, df)
-
-# Загружаем характеристики товара по АПИ. Это нужно для того, чтобы точно узнать: 1. Какие характеристики существуют. 2. Для какие атрибутов нужны будут справочники
-try:
-    category_characteristics_from_api = updater.get_category_characteristics_from_api(description_category_id, type_id)
-except Exception as e:
-    logger.info(f'Произошла ошибка связанная с получением cписка характеристик категории по АПИ\nТекст ошибки: {e}\nВозможная причина: ошибка на стороне Озон')
-    input('\nНажмите Enter для выхода...')
-    sys.exit(1)
-
-
-# Готовим атрибуты для обновления
-
-# 1. Получаем атрибуты, которые нам нужно обновить + их значения
-all_attributes_for_update = get_all_attributes_for_update(df, ATTRIBUTES_MAPPING)
-
-# 2. Приводим атрибуты к нужным типам данным
-if all_attributes_for_update:
-    all_attributes_for_update = update_typing_attributes(all_attributes_for_update, ТYPING_ATTRIBUTES)
-
-    # 3. Получаем id атрибута + complex_id
-    attributes_complex_ids = get_complex_attributes_ids(all_attributes_for_update, category_characteristics_from_api)
+if mode == 'delete':
+    logger.info(f'Выбран режим удаления характеристик!')
+    # Удаляем, если есть ERROR в status_products
+    all_products_from_api, _ = delete_error_characetristic(all_products_from_api, status_products, all_attributes_for_update=None)
     
-    # 4. Получаем атрибуты для которых нужны справочники
-    attributes_for_directory = get_attributes_for_changes(all_attributes_for_update, category_characteristics_from_api)
-
-    # split если нужно
-    for offer_id, attributes in all_attributes_for_update.items():
-        for id, value in attributes.items():
-            try:
-                if ';' in value:
-                    value = [i.strip() for i in value.split(';')]
-                    all_attributes_for_update[offer_id][id] = value
-            except Exception:
-                continue
-                        
-    # Словарь для хранения справочников
-    characteristic_for_attributes_from_api = {}
+    # Проверяем нужно ли удалять из root
+    if source_file.check_update_root_characteristics():
+        logger.info('Удаляем root характеристики')
+        all_products_from_api = delete_root_characterictics(all_products_from_api, dict_dicts_from_df)
     
-    if any(attributes_for_directory.values()):
-        for offer_id, attribute_ids in attributes_for_directory.items():
-            for attribute_id in attribute_ids:
-                # Получаем значение к которому нужен ID
-                value = all_attributes_for_update[offer_id][attribute_id]
-                characteristic_for_attributes_from_api[offer_id] = {attribute_id:{}}
-                if isinstance(value, list):
-                    for val in value:
-                        # Запрос к API
-                        try:
-                            attrs_items, status_products = updater.get_reference_characteristic_values_from_api(offer_id, attribute_id, description_category_id, type_id, val, status_products)
-                            if attrs_items:
-                                for attr in attrs_items:
-                                    if attr['value'] == val:
-                                        characteristic_for_attributes_from_api[offer_id][attribute_id].update({val: attr['id']})
-                        except Exception as e:
-                            logger.warning(f'Произошла ошибка связаная с получением справочной информации по АПИ.\nТекст ошибки: {e}\nВозможные причины: 1. ошибка на стороне Озон')
-                            continue
-                        
-                else:
-                    try:
-                        attrs_items, status_products = updater.get_reference_characteristic_values_from_api(offer_id, attribute_id, description_category_id, type_id, value, status_products)
-                        if attrs_items:
-                            for attr in attrs_items:
-                                if attr['value'] == value:
-                                    characteristic_for_attributes_from_api[offer_id][attribute_id].update({value: attr['id']})   
-                    except Exception as e:
-                        logger.warning(f'Произошла ошибка связаная с получением справочной информации по АПИ.\nТекст ошибки: {e}\nВозможные причины: 1. ошибка на стороне Озон')
-                        continue
-                  
-    # Удаляем товары со статусом ERROR
-    all_products_from_api, all_attributes_for_update = delete_error_characetristic(all_products_from_api, status_products, all_attributes_for_update)
-            
-    # Обновляем атрибуты словаря словарей данными
-    all_products_from_api = apply_attribute_changes(all_products_from_api, all_attributes_for_update, characteristic_for_attributes_from_api, attributes_complex_ids, attributes_or_complex_attributes=False)
+    # Проверяем нужно ли удалять из attributes
+    all_attributes_for_delete = get_all_attributes_for_update(df, ATTRIBUTES_MAPPING)
+    if all_attributes_for_delete:
+        logger.info('Удаляем атрибуты')
+        all_products_from_api = delete_attributes(all_products_from_api, all_attributes_for_delete, 'attributes')
+    
+    # Проверяем нужно ли удалять из complex_attributes
+    all_complex_attributes_for_delete = get_all_attributes_for_update(df, COMPLEX_ATTRIBUTES_MAPPING)
+    if all_complex_attributes_for_delete:
+        logger.info('Удаляем комплекс атрибуты')
+        all_products_from_api = delete_attributes(all_products_from_api, all_complex_attributes_for_delete, 'complex_attributes')
 
-# Готовим комплекс атрибуты для обновления
+elif mode == 'update':
+    logger.info(f'Выбран режим обновления характеристик!')
+    # Удаляем, если есть ERROR в status_products
+    all_products_from_api, all_attributes_for_update = delete_error_characetristic(all_products_from_api, status_products, all_attributes_for_update=None)
 
-# 1. Получаем комплекс атрибуты, которые нам нужно обновить + их значения
-all_complex_attributes_for_update = get_all_attributes_for_update(df, COMPLEX_ATTRIBUTES_MAPPING)
+    # Извлекаем description_category_id и type_id для запроса к API, чтобы получить справочники атрибутов
+    description_category_id = None
+    type_id = None
+    for _, product_data in all_products_from_api.items():
+        for _, characteristic in product_data.items():
+            description_category_id = characteristic.get('description_category_id', DESCRIPTION_CATEGORY_ID)
+            type_id = characteristic.get('type_id', TYPE_ID)
+            if description_category_id and type_id:
+                break
 
-if all_complex_attributes_for_update:
+    # Обновляем корень словаря словарей данными из Датафрейма
+    all_products_from_api = apply_root_changes(all_products_from_api, dict_dicts_from_df)
+
+    # Загружаем характеристики товара по АПИ. Это нужно для того, чтобы точно узнать: 1. Какие характеристики существуют. 2. Для какие атрибутов нужны будут справочники
+    try:
+        category_characteristics_from_api = updater.get_category_characteristics_from_api(description_category_id, type_id)
+    except Exception as e:
+        logger.info(f'Произошла ошибка связанная с получением cписка характеристик категории по АПИ\nТекст ошибки: {e}\nВозможная причина: ошибка на стороне Озон')
+        input('\nНажмите Enter для выхода...')
+        sys.exit(1)
+
+    # Готовим атрибуты для обновления
+
+    # 1. Получаем атрибуты, которые нам нужно обновить + их значения
+    all_attributes_for_update = get_all_attributes_for_update(df, ATTRIBUTES_MAPPING)
+
     # 2. Приводим атрибуты к нужным типам данным
-    all_complex_attributes_for_update = update_typing_attributes(all_complex_attributes_for_update, ТYPING_ATTRIBUTES)
+    if all_attributes_for_update:
+        all_attributes_for_update = update_typing_attributes(all_attributes_for_update, ТYPING_ATTRIBUTES)
 
-    # 3. Получаем id атрибута + complex_id
-    complex_attributes_complex_id = get_complex_attributes_ids(all_complex_attributes_for_update, category_characteristics_from_api)
+        # 3. Получаем id атрибута + complex_id
+        attributes_complex_ids = get_complex_attributes_ids(all_attributes_for_update, category_characteristics_from_api)
+        
+        # 4. Получаем атрибуты для которых нужны справочники
+        attributes_for_directory = get_attributes_for_changes(all_attributes_for_update, category_characteristics_from_api)
 
-    # 4. Получаем атрибуты для которых нужны справочники
-    complex_attributes_for_directory = get_attributes_for_changes(all_complex_attributes_for_update, category_characteristics_from_api)
-    
-    # split если нужно
-    for offer_id, attributes in all_complex_attributes_for_update.items():
-        for id, value in attributes.items():
-            try:
-                if ';' in value:
-                    value = [i.strip() for i in value.split(';')]
-                    all_complex_attributes_for_update[offer_id][id] = value
-            except Exception:
-                continue
-
-    # Словарь для хранения справочников
-    characteristic_for_complex_attributes_from_api = {}
-    
-    if any(complex_attributes_for_directory.values()):
-        for offer_id, attribute_ids in complex_attributes_for_directory.items():
-            for attribute_id in attribute_ids:
-                characteristic_for_complex_attributes_from_api[offer_id] = {attribute_id:{}}
-                # Получаем значение к которому нужен ID
-                value = all_complex_attributes_for_update[offer_id][attribute_id]
-                if isinstance(value, list):
-                    for val in value:
-                        # Запрос к API
+        # split если нужно
+        for offer_id, attributes in all_attributes_for_update.items():
+            for id, value in attributes.items():
+                try:
+                    if ';' in value:
+                        value = [i.strip() for i in value.split(';')]
+                        all_attributes_for_update[offer_id][id] = value
+                except Exception:
+                    continue
+                            
+        # Словарь для хранения справочников
+        characteristic_for_attributes_from_api = {}
+        
+        if any(attributes_for_directory.values()):
+            for offer_id, attribute_ids in attributes_for_directory.items():
+                for attribute_id in attribute_ids:
+                    # Получаем значение к которому нужен ID
+                    value = all_attributes_for_update[offer_id][attribute_id]
+                    characteristic_for_attributes_from_api[offer_id] = {attribute_id:{}}
+                    if isinstance(value, list):
+                        for val in value:
+                            # Запрос к API
+                            try:
+                                attrs_items, status_products = updater.get_reference_characteristic_values_from_api(offer_id, attribute_id, description_category_id, type_id, val, status_products)
+                                if attrs_items:
+                                    for attr in attrs_items:
+                                        if attr['value'] == val:
+                                            characteristic_for_attributes_from_api[offer_id][attribute_id].update({val: attr['id']})
+                            except Exception as e:
+                                logger.warning(f'Произошла ошибка связаная с получением справочной информации по АПИ.\nТекст ошибки: {e}\nВозможные причины: 1. ошибка на стороне Озон')
+                                continue
+                            
+                    else:
                         try:
-                            attrs_items, status_products = updater.get_reference_characteristic_values_from_api(offer_id, attribute_id, description_category_id, type_id, val, status_products)
+                            attrs_items, status_products = updater.get_reference_characteristic_values_from_api(offer_id, attribute_id, description_category_id, type_id, value, status_products)
                             if attrs_items:
                                 for attr in attrs_items:
-                                    if attr['value'] == val:
-                                        characteristic_for_complex_attributes_from_api[offer_id][attribute_id].update({val: attr['id']})
+                                    if attr['value'] == value:
+                                        characteristic_for_attributes_from_api[offer_id][attribute_id].update({value: attr['id']})   
                         except Exception as e:
                             logger.warning(f'Произошла ошибка связаная с получением справочной информации по АПИ.\nТекст ошибки: {e}\nВозможные причины: 1. ошибка на стороне Озон')
                             continue
-                        
-                else:
-                    try:
-                        attrs_items, status_products = updater.get_reference_characteristic_values_from_api(offer_id, attribute_id, description_category_id, type_id, value, status_products)
-                        if attrs_items:
-                            for attr in attrs_items:
-                                if attr['value'] == value:
-                                    characteristic_for_complex_attributes_from_api[offer_id][attribute_id].update({value: attr['id']})   
-                    except Exception as e:
-                        logger.warning(f'Произошла ошибка связаная с получением справочной информации по АПИ.\nТекст ошибки: {e}\nВозможные причины: 1. ошибка на стороне Озон')
-                        continue
+                    
+        # Удаляем товары со статусом ERROR
+        all_products_from_api, all_attributes_for_update = delete_error_characetristic(all_products_from_api, status_products, all_attributes_for_update)
+                
+        # Обновляем атрибуты словаря словарей данными
+        all_products_from_api = apply_attribute_changes(all_products_from_api, all_attributes_for_update, characteristic_for_attributes_from_api, attributes_complex_ids, attributes_or_complex_attributes=False)
+
+    # Готовим комплекс атрибуты для обновления
+
+    # 1. Получаем комплекс атрибуты, которые нам нужно обновить + их значения
+    all_complex_attributes_for_update = get_all_attributes_for_update(df, COMPLEX_ATTRIBUTES_MAPPING)
+
+    if all_complex_attributes_for_update:
+        # 2. Приводим атрибуты к нужным типам данным
+        all_complex_attributes_for_update = update_typing_attributes(all_complex_attributes_for_update, ТYPING_ATTRIBUTES)
+
+        # 3. Получаем id атрибута + complex_id
+        complex_attributes_complex_id = get_complex_attributes_ids(all_complex_attributes_for_update, category_characteristics_from_api)
+
+        # 4. Получаем атрибуты для которых нужны справочники
+        complex_attributes_for_directory = get_attributes_for_changes(all_complex_attributes_for_update, category_characteristics_from_api)
         
-    all_products_from_api, all_complex_attributes_for_update = delete_error_characetristic(all_products_from_api, status_products, all_complex_attributes_for_update)
-    # Обновляем атрибуты словаря словарей данными, если нужно
-    
-    # Обновляем комплекс атрибуты словаря словарей данными, если нужно
-    all_products_from_api = apply_attribute_changes(all_products_from_api, all_complex_attributes_for_update, characteristic_for_complex_attributes_from_api, complex_attributes_complex_id, attributes_or_complex_attributes=True)
-      
-if 'доп. озон.видео: ссылка' in df.columns or 'доп. озон.видео: название' in df.columns:
-    all_products_from_api = update_video_attributes(df, all_products_from_api)
+        # split если нужно
+        for offer_id, attributes in all_complex_attributes_for_update.items():
+            for id, value in attributes.items():
+                try:
+                    if ';' in value:
+                        value = [i.strip() for i in value.split(';')]
+                        all_complex_attributes_for_update[offer_id][id] = value
+                except Exception:
+                    continue
+
+        # Словарь для хранения справочников
+        characteristic_for_complex_attributes_from_api = {}
+        
+        if any(complex_attributes_for_directory.values()):
+            for offer_id, attribute_ids in complex_attributes_for_directory.items():
+                for attribute_id in attribute_ids:
+                    characteristic_for_complex_attributes_from_api[offer_id] = {attribute_id:{}}
+                    # Получаем значение к которому нужен ID
+                    value = all_complex_attributes_for_update[offer_id][attribute_id]
+                    if isinstance(value, list):
+                        for val in value:
+                            # Запрос к API
+                            try:
+                                attrs_items, status_products = updater.get_reference_characteristic_values_from_api(offer_id, attribute_id, description_category_id, type_id, val, status_products)
+                                if attrs_items:
+                                    for attr in attrs_items:
+                                        if attr['value'] == val:
+                                            characteristic_for_complex_attributes_from_api[offer_id][attribute_id].update({val: attr['id']})
+                            except Exception as e:
+                                logger.warning(f'Произошла ошибка связаная с получением справочной информации по АПИ.\nТекст ошибки: {e}\nВозможные причины: 1. ошибка на стороне Озон')
+                                continue
+                            
+                    else:
+                        try:
+                            attrs_items, status_products = updater.get_reference_characteristic_values_from_api(offer_id, attribute_id, description_category_id, type_id, value, status_products)
+                            if attrs_items:
+                                for attr in attrs_items:
+                                    if attr['value'] == value:
+                                        characteristic_for_complex_attributes_from_api[offer_id][attribute_id].update({value: attr['id']})   
+                        except Exception as e:
+                            logger.warning(f'Произошла ошибка связаная с получением справочной информации по АПИ.\nТекст ошибки: {e}\nВозможные причины: 1. ошибка на стороне Озон')
+                            continue
+            
+        all_products_from_api, all_complex_attributes_for_update = delete_error_characetristic(all_products_from_api, status_products, all_complex_attributes_for_update)
+        # Обновляем атрибуты словаря словарей данными, если нужно
+        
+        # Обновляем комплекс атрибуты словаря словарей данными, если нужно
+        all_products_from_api = apply_attribute_changes(all_products_from_api, all_complex_attributes_for_update, characteristic_for_complex_attributes_from_api, complex_attributes_complex_id, attributes_or_complex_attributes=True)
+        
+    if 'доп. озон.видео: ссылка' in df.columns or 'доп. озон.видео: название' in df.columns:
+        all_products_from_api = update_video_attributes(df, all_products_from_api)
 
 # Обрабатываем complex_attributes - приводим к API формату по документации
 all_products_from_api = preparation_complex_attributes(all_products_from_api)
@@ -1620,7 +1784,6 @@ try:
         message=report_message
     )
     logger.info(f"{filename} отправлен в битрикс чат")
-finally:
     # Удаление файла после отправки
     if os.path.exists(file_path):
         try:
@@ -1630,3 +1793,9 @@ finally:
             logger.debug(f"Ошибка при удалении файла: {str(e)}")
     else:
         logger.error(f"Файл {filename} не найден для удаления")
+except Exception as e:
+    logger.error(f"Отправить файл в чат Битрикс24 не удалось. Ошибка={e}")
+
+logger.debug(all_products_from_api)
+
+input('\n\nРабота программы завершена. Нажмите Enter для выхода...\n\n')
